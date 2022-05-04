@@ -12,7 +12,7 @@ Thus, for sets A and B above, and C = {2, 3}, A △ B △ C = (A △ B) △ C = 
 #include <random>
 #include <algorithm> 
 
-#define V_NUM 2
+#define V_NUM 3
 
 using namespace std;
 
@@ -22,42 +22,28 @@ void initialize_vectors(void);
 
 void find_symmetric_diff(vector <vector<int>> const &v_set) {
     vector <int> v_merge;
+
     v_merge.reserve(v_set.size());
 
-    v_merge.insert(v_merge.end(), v_set.at(0).begin(), v_set.at(0).end());
-    v_merge.insert(v_merge.end(), v_set.at(1).begin(), v_set.at(1).end());
-
-    print_vector(v_merge);
-
-    sort(v_merge.begin(), v_merge.end());
-
-    print_vector(v_merge);
-
-    for (int i = v_merge.size() - 1; i > 0;) {
-        const int n = v_merge[i];
-        if (v_merge[i - 1] == n) {
-            while (v_merge[i] == n) {
-                v_merge.erase(v_merge.begin() + i--);
+    for (size_t i = 0; i < V_NUM; i++) {
+        v_merge.insert(v_merge.end(), v_set.at(i).begin(), v_set.at(i).end());
+        sort(v_merge.begin(), v_merge.end());
+        
+        for (int i = v_merge.size() - 1; i > 0;) {
+            const int n = v_merge[i];
+            if (v_merge[i - 1] == n) {
+                while (v_merge[i] == n) {
+                    v_merge.erase(v_merge.begin() + i--);
+                }
+            }
+            else {
+                i--;
             }
         }
-        else {
-            i--;
-        }
     }
-
-    print_vector(v_merge);
     
-    /*
-    { 1  3  5  7  8  9 }
-    { 0  1  5  7 }
-    { 0  2  3  5 }
-    => { 0 3 8 9 } => { 2 5 8 9 }
-    */
-
-    /*
-    { 1  3  5  7  8  9 0  1  5  7 } => { 0 3 8 9 } => { 0 3 8 9 0 2 3 5 } => { 2 5 8 9 }
-    Merge, sort, remove duplicates until reaches the end of vector
-    */ 
+    cout << "The symmetric difference is: " << endl;
+    print_vector(v_merge);
 }
 
 int main(void) {
@@ -69,6 +55,7 @@ int main(void) {
 }
 
 void print_2d_vector(vector <vector<int>> &v) {
+    cout << "Vectors set: " << endl;
     for (const auto &r : v) {
         cout << '{';
 
@@ -107,18 +94,14 @@ void initialize_vectors(void) {
         v_random.clear();  
     }
 
-    /* Sorting, removing duplicates and printing results */
-    v_size = v_set.size();
-  
-    for (size_t k = 0; k < v_size; k++) {
+    /* Sorting, removing duplicates and printing */
+    for (size_t k = 0; k < V_NUM; k++) {
         sort(v_set.at(k).begin(), v_set.at(k).end());
         v_set.at(k).erase(unique(v_set.at(k).begin(), v_set.at(k).end()), v_set.at(k).end());
     }    
 
     print_2d_vector(v_set);    
 
-    // Symm diff
-    find_symmetric_diff(v_set);
-    
+    find_symmetric_diff(v_set);    
 }
 
